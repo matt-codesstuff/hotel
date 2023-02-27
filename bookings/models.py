@@ -24,8 +24,8 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, blank=True, default=None)
     total_guests = models.IntegerField()
     rate = models.DecimalField(max_digits=6, decimal_places=2)
-    check_in = models.DateTimeField('check-in')
-    check_out = models.DateTimeField('check-out')
+    check_in = models.DateField('check-in')
+    check_out = models.DateField('check-out')
 
     def __str__(self):
         ci = self.check_in.strftime('%d/%m/%Y')
