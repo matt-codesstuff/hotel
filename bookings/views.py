@@ -29,6 +29,6 @@ def index(request, *date_check):
 
 def detail(request, booking_id):
     return HttpResponse(f'you are viewing detalis for {booking_id} booking')
-
+ 
 def new_booking(request):
     return HttpResponse('You are creating a new booking')

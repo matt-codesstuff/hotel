@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -8,10 +9,19 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
+    {% load static %}
+      <link rel="stylesheet" href="{% static 'bookings/style.css' %}">
+
     <h1>Hotel Booking System</h1>
-    {% for date in dates %}
-      <p>{{ date }}</p>
-    {% endfor %}
+    <table>
+      <tr>
+        {% for date in dates %}
+          <th>{{ date }}</th>
+        {% endfor %}
+      </tr>
+
+    </table>
+
     {% if booking_list %}
         <ul>
             {% for booking in booking_list %}
