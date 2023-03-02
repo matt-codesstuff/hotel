@@ -1,35 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+{% extends 'bookings/header.html' %}
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>index</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    {% load static %}
-      <link rel="stylesheet" href="{% static 'bookings/style.css' %}">
+{% block content %}
+  <h1>Hotel Booking System</h1>
+      
+  <table>
+    <tr>
+      {% for date in dates %}
+        <th>{{ date }}</th>
+      {% endfor %}
+    </tr>
 
-    <h1>Hotel Booking System</h1>
-    <table>
-      <tr>
-        {% for date in dates %}
-          <th>{{ date }}</th>
-        {% endfor %}
-      </tr>
+  </table>
 
-    </table>
+  {% if booking_list %}
+      <ul>
+          {% for booking in booking_list %}
+              <li>{{ booking }}</li>
+          {% endfor %}
+      </ul>
+    
+{% endif %}
+{% endblock %}
 
-    {% if booking_list %}
-        <ul>
-            {% for booking in booking_list %}
-                <li>{{ booking }}</li>
-            {% endfor %}
-        </ul>
-        
-    {% endif %}
+
 	
-  </body>
-</html>
