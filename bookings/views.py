@@ -5,7 +5,7 @@ from django.utils import timezone
 from .models import Booking
 
 
-def index(request, date_check):
+def index(request, *date_check):
     booking_list = []
     bookings = Booking.objects.all()
 
