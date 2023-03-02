@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.utils import timezone
+
 
 class Guest(models.Model):
     first_name = models.CharField(max_length=50)
@@ -24,7 +26,7 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, blank=True, default=None)
     total_guests = models.IntegerField()
     rate = models.DecimalField(max_digits=6, decimal_places=2)
-    check_in = models.DateField('check-in')
+    check_in = models.DateField('check-in', default=timezone.now)
     check_out = models.DateField('check-out')
 
     def __str__(self):
