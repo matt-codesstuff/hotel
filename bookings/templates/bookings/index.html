@@ -1,19 +1,13 @@
 {% extends 'bookings/header.html' %}
 
 {% block content %}
-  <h1>Hotel Booking System</h1>
-  <p>{{ bookings }}</p>
-  <p>{{ bookings_per_room }}</p>
-      
+<h1>Bookings</h1>
   <table>
     <tr>
       {% for date in dates %}
         <th>{{ date }}</th>
       {% endfor %}
     </tr>
-
-  
-
       {% if booking_list %}
         
         {% for room in booking_list %}
@@ -22,8 +16,7 @@
                 <td>{{ booking }}</td>
               {% endfor %}
           </tr>  
-        {% endfor %}
-        
+        {% endfor %}        
   </table>    
     
       {% endif %}
