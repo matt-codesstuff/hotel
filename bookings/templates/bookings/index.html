@@ -2,6 +2,8 @@
 
 {% block content %}
   <h1>Hotel Booking System</h1>
+  <p>{{ bookings }}</p>
+  <p>{{ bookings_per_room }}</p>
       
   <table>
     <tr>
@@ -10,17 +12,21 @@
       {% endfor %}
     </tr>
 
-  </table>
+  
 
-  {% if booking_list %}
-      <ul>
-          {% for booking in booking_list %}
-              <li>{{ booking }}</li>
-          {% endfor %}
-      </ul>
+      {% if booking_list %}
+        
+        {% for room in booking_list %}
+          <tr>
+              {% for booking in room %}
+                <td>{{ booking }}</td>
+              {% endfor %}
+          </tr>  
+        {% endfor %}
+        
+  </table>    
     
-{% endif %}
+      {% endif %}
 {% endblock %}
-
 
 	
