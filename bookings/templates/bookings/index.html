@@ -2,6 +2,11 @@
 
 {% block content %}
 <h1>Bookings</h1>
+<form action=" " method="post">
+  {% csrf_token %}
+  <input type="datetime-local" name="date">
+  <input type="submit" value="Submit">
+</form>
   <table>
     <tr>
       {% for date in dates %}

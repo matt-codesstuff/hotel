@@ -1,15 +1,26 @@
-from datetime import timedelta
+import pytz
 
-from django.shortcuts import render
+from datetime import timedelta, datetime
+
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.utils import timezone
+from django import forms
 
 from .models import Booking, Room
+from .forms import DateForm
+
 
 DAYCOUNT = 10
 
 
 def index(request, *date_check):
+
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        date_check = datetime.fromisoformat(date)
+        date_check = date_check.replace(tzinfo=pytz.UTC)
+        
 
     if not date_check:
         date_check = timezone.now()
@@ -41,6 +52,8 @@ def index(request, *date_check):
                     # reset this variable for each booking
                     date_check_booking = date_check
                     for i , j in enumerate(range(DAYCOUNT), 1):
+                        # check each date to see if booking falls on that day, and write the booking in to 
+                        # the current date if it does
                         if booking.check_in <= date_check_booking <=booking.check_out:
                             row[i] = booking
                             date_check_booking += timedelta(days=1)
@@ -49,9 +62,7 @@ def index(request, *date_check):
 
     return render(request, 'bookings/index.html', 
                   {'booking_list': booking_list, 
-                   'dates' : dates,
-                   'bookings': bookings,
-                   'bookings_per_room': bookings_per_room,})          
+                   'dates' : dates,})          
 
             
 def detail(request, booking_id):
@@ -59,3 +70,16 @@ def detail(request, booking_id):
  
 def new_booking(request):
     return HttpResponse('You are creating a new booking')
+
+def bla(request):
+    if request.method == 'POST':
+        form = DateForm(request.POST)
+        if form.is_valid():
+            date = form.cleaned_data['date']
+    else:
+        date = timezone.now()
+
+    date_check = date.strftime('%d/%m/%y')    
+
+
+    return redirect('bookings:index')      
