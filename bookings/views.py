@@ -1,32 +1,28 @@
 import pytz
-
 from datetime import timedelta, datetime
 
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.utils import timezone
-from django import forms
 
 from .models import Booking, Room
-from .forms import DateForm
 
 
 DAYCOUNT = 10
 
 
-def index(request, *date_check):
-
+def index(request):
+    # get date from POST request and add tzinfo so all date objects are aware
     if request.method == 'POST':
         date = request.POST.get('date')
-        date_check = datetime.fromisoformat(date)
-        date_check = date_check.replace(tzinfo=pytz.UTC)
-        
-
+        amsterdam = pytz.timezone('Europe/Amsterdam')
+        date_check = datetime.fromisoformat(date).replace(tzinfo=amsterdam)
+                
     if not date_check:
         date_check = timezone.now()
 
     booking_list = []
-    dates = ['Room',]
+    dates = ['Room']
     rooms = Room.objects.all()
     bookings = Booking.objects.filter(check_in__range=(date_check - timedelta(days=14), date_check + timedelta(days=14)))    
 
@@ -54,7 +50,7 @@ def index(request, *date_check):
                     for i , j in enumerate(range(DAYCOUNT), 1):
                         # check each date to see if booking falls on that day, and write the booking in to 
                         # the current date if it does
-                        if booking.check_in <= date_check_booking <=booking.check_out:
+                        if booking.check_in <= date_check_booking <= booking.check_out:
                             row[i] = booking
                             date_check_booking += timedelta(days=1)
                         else:
@@ -66,20 +62,9 @@ def index(request, *date_check):
 
             
 def detail(request, booking_id):
-    return HttpResponse(f'you are viewing detalis for {booking_id} booking')
+    return HttpResponse(f'you are viewing details for booking {booking_id}')
  
 def new_booking(request):
     return HttpResponse('You are creating a new booking')
 
-def bla(request):
-    if request.method == 'POST':
-        form = DateForm(request.POST)
-        if form.is_valid():
-            date = form.cleaned_data['date']
-    else:
-        date = timezone.now()
-
-    date_check = date.strftime('%d/%m/%y')    
-
-
-    return redirect('bookings:index')      
+   

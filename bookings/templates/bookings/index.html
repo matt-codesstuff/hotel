@@ -2,29 +2,40 @@
 
 {% block content %}
 <h1>Bookings</h1>
-<form action=" " method="post">
+
+<form action="" method="post">
   {% csrf_token %}
   <input type="datetime-local" name="date">
   <input type="submit" value="Submit">
 </form>
+
   <table>
     <tr>
       {% for date in dates %}
         <th>{{ date }}</th>
       {% endfor %}
     </tr>
-      {% if booking_list %}
-        
+      {% if booking_list %}       
         {% for room in booking_list %}
           <tr>
               {% for booking in room %}
-                <td>{{ booking }}</td>
+                {% if booking != None %}
+                  {% if booking.identifier %}
+                    <td>{{ booking }}</td>
+                  {% else %}
+                  <td><a href="{{booking.pk}}">{{ booking }}
+                  </a></td>
+                  {% endif %}  
+                {% else %}
+                  <td><a href="new_booking">{{ booking }}</a></td>  
+                {% endif %}  
               {% endfor %}
-          </tr>  
+          </tr>     
         {% endfor %}        
+      {% endif %}
   </table>    
     
-      {% endif %}
+
 {% endblock %}
 
 	

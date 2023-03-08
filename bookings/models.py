@@ -30,7 +30,11 @@ class Booking(models.Model):
     check_out = models.DateTimeField('check-out')
 
     def __str__(self):
-        return f'{self.main_guest}'
+        return f'{self.main_guest}'    
+    # had to write this method because django scripting has no built-in
+    # method for checking if an item is a num(int)
+    def isnum(self):
+        return self.room.identifier.isdigit()
 
 
     
