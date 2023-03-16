@@ -1,16 +1,20 @@
-from django.db import models
+import datetime
 
+from django.db import models
 from django.utils import timezone
 
 
 class Guest(models.Model):
     first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50, blank=True)
     tel_number = models.CharField(max_length=12, blank=True)
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(max_length=254, blank=True)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        if self.last_name:
+            return f'{self.first_name} {self.last_name}'
+        else: 
+            return f'{self.first_name}'
     
 
 class Room(models.Model):
@@ -27,14 +31,11 @@ class Booking(models.Model):
     total_guests = models.IntegerField()
     rate = models.DecimalField(max_digits=6, decimal_places=2)
     check_in = models.DateTimeField('check-in', default=timezone.now)
-    check_out = models.DateTimeField('check-out')
+    check_out = models.DateTimeField('check-out', default=timezone.now() + datetime.timedelta(days=1))
 
     def __str__(self):
         return f'{self.main_guest}'    
-    # had to write this method because django scripting has no built-in
-    # method for checking if an item is a num(int)
-    def isnum(self):
-        return self.room.identifier.isdigit()
+
 
 
     

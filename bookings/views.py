@@ -1,24 +1,23 @@
 import pytz
-from datetime import timedelta, datetime
 
+from datetime import timedelta, datetime
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.utils import timezone
 
-from .models import Booking, Room
-
+from .models import Booking, Room, Guest
+from .forms import BookingForm
 
 DAYCOUNT = 10
+AMSTERDAM = pytz.timezone('Europe/Amsterdam')
 
 
 def index(request):
-    # get date from POST request and add tzinfo so all date objects are aware
+    # get date from POST request and add tzinfo so all date objects in this view are aware
     if request.method == 'POST':
-        date = request.POST.get('date')
-        amsterdam = pytz.timezone('Europe/Amsterdam')
-        date_check = datetime.fromisoformat(date).replace(tzinfo=amsterdam)
-                
-    if not date_check:
+        date = request.POST.get('date')       
+        date_check = datetime.fromisoformat(date).replace(tzinfo=AMSTERDAM)                
+    else:
         date_check = timezone.now()
 
     booking_list = []
@@ -36,8 +35,11 @@ def index(request):
         booking_list.append([room_nr])
     # populate each day of room list
     for room_row in booking_list:
+        d = date_check
         for i in range(DAYCOUNT):
-            room_row.append(None)
+            room_row.append(d.strftime('%d%m%y'))
+            d += timedelta(days=1)
+           
 
     for row in booking_list:
         # narrow lookup to only bookings for the current room
@@ -58,13 +60,19 @@ def index(request):
 
     return render(request, 'bookings/index.html', 
                   {'booking_list': booking_list, 
-                   'dates' : dates,})          
+                   'dates' : dates,
+                   'date_check': date_check})       
 
             
 def detail(request, booking_id):
     return HttpResponse(f'you are viewing details for booking {booking_id}')
  
-def new_booking(request):
-    return HttpResponse('You are creating a new booking')
+def new_booking(request, room_id, date):
+    room = Room.objects.get(pk=room_id)
+    form = BookingForm()
+    return render(request, 'bookings/new_booking.html',
+                  {'form': form,
+                   'room': room,
+                   'date': date})
 
    

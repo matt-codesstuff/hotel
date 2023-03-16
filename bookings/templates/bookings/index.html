@@ -2,10 +2,11 @@
 
 {% block content %}
 <h1>Bookings</h1>
+{{date_check}}
 
 <form action="" method="post">
   {% csrf_token %}
-  <input type="datetime-local" name="date">
+  <input type="date" name="date">
   <input type="submit" value="Submit">
 </form>
 
@@ -19,15 +20,14 @@
         {% for room in booking_list %}
           <tr>
               {% for booking in room %}
-                {% if booking != None %}
+                {% if booking.pk %}
                   {% if booking.identifier %}
                     <td>{{ booking }}</td>
                   {% else %}
-                  <td><a href="{{booking.pk}}">{{ booking }}
-                  </a></td>
+                    <td><a href="detail/{{booking.pk}}">{{ booking }}</a></td>
                   {% endif %}  
                 {% else %}
-                  <td><a href="new_booking">{{ booking }}</a></td>  
+                  <td><a href="new_booking/{{room.0.pk}}/{{booking}}">empty</a></td>  
                 {% endif %}  
               {% endfor %}
           </tr>     

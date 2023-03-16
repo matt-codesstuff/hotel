@@ -1,0 +1,10 @@
+{% extends 'bookings/header.html' %}
+
+{% block content %}
+<form action="" method="post">
+    <h5>Room{{room.identifier}}</h5>
+    <h5>{{date}}</h5>
+    {% csrf_token %}
+    {{form.as_p}}
+</form>
+{% endblock %}
