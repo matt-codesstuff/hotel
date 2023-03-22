@@ -27,11 +27,11 @@ class Room(models.Model):
 
 class Booking(models.Model):
     main_guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, blank=True, default=None)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, blank=True)
     total_guests = models.IntegerField()
     rate = models.DecimalField(max_digits=6, decimal_places=2)
-    check_in = models.DateTimeField('check-in', default=timezone.now)
-    check_out = models.DateTimeField('check-out', default=timezone.now() + datetime.timedelta(days=1))
+    check_in = models.DateTimeField('check-in')
+    check_out = models.DateTimeField('check-out')
 
     def __str__(self):
         return f'{self.main_guest}'    

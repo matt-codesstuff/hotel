@@ -1,16 +1,15 @@
 import pytz
 
 from datetime import timedelta, datetime
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.utils import timezone
 
 from .models import Booking, Room, Guest
-from .forms import BookingForm
+from .forms import NewBookingForm
 
 DAYCOUNT = 10
 AMSTERDAM = pytz.timezone('Europe/Amsterdam')
-
 
 def index(request):
     # get date from POST request and add tzinfo so all date objects in this view are aware
@@ -33,14 +32,13 @@ def index(request):
     # populate booking_list with a new list for each room
     for room_nr in rooms:        
         booking_list.append([room_nr])
-    # populate each day of room list
+    # populate each day of room list with datetime objects converted to string for easy passing through urlconfig
     for room_row in booking_list:
         d = date_check
         for i in range(DAYCOUNT):
             room_row.append(d.strftime('%d%m%y'))
             d += timedelta(days=1)
            
-
     for row in booking_list:
         # narrow lookup to only bookings for the current room
         bookings_per_room = bookings.filter(room=row[0])
@@ -60,19 +58,66 @@ def index(request):
 
     return render(request, 'bookings/index.html', 
                   {'booking_list': booking_list, 
-                   'dates' : dates,
-                   'date_check': date_check})       
+                   'dates' : dates,})       
 
             
 def detail(request, booking_id):
     return HttpResponse(f'you are viewing details for booking {booking_id}')
  
 def new_booking(request, room_id, date):
-    room = Room.objects.get(pk=room_id)
-    form = BookingForm()
+    if request.method == 'POST':
+        form = NewBookingForm(request.POST)
+        
+        if form.is_valid():
+            first = request.POST.get('first_name')
+            last = request.POST.get('last_name')
+            room_nr = request.POST.get('room')
+            total_guests = request.POST.get('total_guests')
+            rate = request.POST.get('rate')
+            check_in = request.POST.get('check_in')
+            check_out = request.POST.get('check_out')
+
+            room = Room.objects.get(identifier=room_nr)
+                
+            g = Guest(first_name = first, 
+                          last_name = last)
+            g.save()
+                
+            b = Booking(main_guest = g,
+                            room = room,
+                            rate = rate,
+                            total_guests = total_guests,
+                            check_in = check_in,
+                            check_out = check_out)
+            b.save()
+
+            return redirect('bookings:index')
+        else:
+            return HttpResponse("You done ffed up")
+    else:        
+        room = Room.objects.get(pk=room_id)
+        day = date[:2]
+        month = date[2:4]
+        year = date[4:]
+        co_day = str(int(day) + 1)
+        co = co_day + month + year
+
+        check_in = datetime.strptime(date, '%d%m%y')
+        check_out = datetime.strptime(co, '%d%m%y')
+
+        data = {'check_in': check_in,
+                    'check_out': check_out,
+                    'room': room}
+        form = NewBookingForm(initial=data)
+
     return render(request, 'bookings/new_booking.html',
-                  {'form': form,
-                   'room': room,
-                   'date': date})
+                    {'form': form,
+                    'room': room,})
+
+
+
+        
+
+
 
    

@@ -12,3 +12,23 @@ td, th {
   border: 1px solid;
   text-align: center;
 }
+
+a {
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.booking {
+  background-color: rgba(52, 235, 183, 0.25);
+}
+
+.empty {
+  background-color: rgba(235, 213, 52, 0.5);
+}
+
+.room_nr {
+  background-color: rgba(143, 143, 143, 0.5);
+}
+
+.date {
+  background-color: rgba(120, 119, 119, 0.6);
+}
