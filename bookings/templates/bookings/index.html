@@ -1,38 +1,41 @@
 {% extends 'bookings/header.html' %}
 
 {% block content %}
-<h1>Bookings</h1>
-<br>
-<form action="" method="post">
-  {% csrf_token %}
-  <input type="date" name="date">
-  <input type="submit" value="Submit">
-</form>
-<br>
-  <table>
-    <tr>
-      {% for date in dates %}
-        <th class="date">{{ date }}</th>
-      {% endfor %}
-    </tr>
-      {% if booking_list %}       
-        {% for room in booking_list %}
-          <tr>
-              {% for booking in room %}
-                {% if booking.pk %}
-                  {% if booking.identifier %}
-                    <td class="room_nr">{{ booking }}</td>
+<div class="container">
+  <h1>Bookings</h1>
+  <br>
+  <form action="/" method="post">
+    {% csrf_token %}
+    <input type="date" name="date">
+    <input type="submit" value="Check">
+  </form>
+  <br>
+    <table>
+      <tr>
+        {% for date in dates %}
+          <th class="date">{{ date }}</th>
+        {% endfor %}
+      </tr>
+        {% if booking_list %}       
+          {% for room in booking_list %}
+            <tr>
+                {% for booking in room %}
+                  {% if booking.pk %}
+                    {% if booking.identifier %}
+                      <td class="room_nr">{{ booking }}</td>
+                    {% else %}
+                      <td class="booking"><a href="detail/{{booking.pk}}">{{ booking.index }}</a></td>
+                    {% endif %}  
                   {% else %}
-                    <td class="booking"><a href="detail/{{booking.pk}}">{{ booking }}</a></td>
+                    <td class="empty"><a href="new_booking/{{room.0.pk}}/{{booking}}">empty</a></td>  
                   {% endif %}  
-                {% else %}
-                  <td class="empty"><a href="new_booking/{{room.0.pk}}/{{booking}}">empty</a></td>  
-                {% endif %}  
-              {% endfor %}
-          </tr>     
-        {% endfor %}        
-      {% endif %}
-  </table>    
+                {% endfor %}
+            </tr>     
+          {% endfor %}        
+        {% endif %}
+    </table>    
+</div>
+
     
 
 {% endblock %}

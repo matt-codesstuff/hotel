@@ -3,18 +3,21 @@ h1, h5 {
 }
 
 table {
-  border: 1px solid;
+  border: 1px solid rgba(63, 63, 63, 0.6);
+  background-color:beige;
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-radius: 3px;
 }
 
 td, th {
-  border: 1px solid;
+  border: 1px solid rgba(120, 119, 119, 0.6);
   text-align: center;
 }
 
 a {
   color: rgba(0, 0, 0, 0.72);
+  text-decoration: none;
 }
 
 .booking {

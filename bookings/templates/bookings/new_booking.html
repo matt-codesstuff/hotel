@@ -1,11 +1,12 @@
 {% extends 'bookings/header.html' %}
 
 {% block content %}
-<form action="" method="post">
-    <h5>Room{{room.identifier}}</h5>
-    <h5>{{date}}</h5>
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value="submit">
-</form>
+<div class="container">
+    <form action="" method="post">
+        <h5>Room {{room.identifier}}</h5>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Create">
+    </form>
+</div>
 {% endblock %}

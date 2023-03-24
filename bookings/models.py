@@ -12,9 +12,21 @@ class Guest(models.Model):
 
     def __str__(self):
         if self.last_name:
-            return f'{self.first_name} {self.last_name}'
+            return f'{self.first_name.capitalize()} {self.last_name.capitalize()}'
         else: 
-            return f'{self.first_name}'
+            return f'{self.first_name.capitalize()}'
+        
+    def index_display(self):
+        if self.last_name:
+            if len(self.last_name) > 7:
+                return f'{(self.first_name[0].upper())}. {self.last_name[:6].capitalize()}...'
+            else:
+                return f'{(self.first_name[0].upper())}. {self.last_name.capitalize()}'
+        else:
+            if len(self.first_name) > 10:
+                return f'{self.first_name[:5].capitalize()}'
+            else:
+                return f'{self.first_name.capitalize()}'        
     
 
 class Room(models.Model):
@@ -34,7 +46,10 @@ class Booking(models.Model):
     check_out = models.DateTimeField('check-out')
 
     def __str__(self):
-        return f'{self.main_guest}'    
+        return f'{self.main_guest}'
+
+    def index(self):
+        return f'{self.main_guest.index_display()}'    
 
 
 
