@@ -10,14 +10,18 @@
     <input type="submit" value="Check">
   </form>
   <br>
+  {% for key, value in floor_dict.items %}
+
     <table>
+      <br>
+      <strong>{{key}}</strong>
       <tr>
         {% for date in dates %}
           <th class="date">{{ date }}</th>
         {% endfor %}
       </tr>
-        {% if booking_list %}       
-          {% for room in booking_list %}
+     
+          {% for room in value %}
             <tr>
                 {% for booking in room %}
                   {% if booking.pk %}
@@ -32,8 +36,10 @@
                 {% endfor %}
             </tr>     
           {% endfor %}        
-        {% endif %}
-    </table>    
+
+    </table>
+  {% endfor %}
+  <br><br><br><br>
 </div>
 
     

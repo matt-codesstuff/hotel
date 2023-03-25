@@ -7,7 +7,7 @@ table {
   background-color:beige;
   width: 100%;
   border-collapse: separate;
-  border-radius: 3px;
+  border-radius: 6px;
 }
 
 td, th {

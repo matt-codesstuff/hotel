@@ -29,8 +29,16 @@ class Guest(models.Model):
                 return f'{self.first_name.capitalize()}'        
     
 
+class Floor(models.Model):
+    identifier = models.CharField(max_length=25)
+
+    def __str__(self):
+        return f'Floor {self.identifier}'
+
+
 class Room(models.Model):
     identifier = models.CharField(max_length=8)
+    floor = models.ForeignKey(Floor, on_delete=models.CASCADE)
     occupancy = models.IntegerField()
 
     def __str__(self):
