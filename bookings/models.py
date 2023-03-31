@@ -64,10 +64,16 @@ class ShopItems(models.Model):
 
 
 class Payment(models.Model):
+    PAYMENT_CHOICES = [
+        ('CSH', 'Cash'),
+        ('VCC', 'Visa(CC)'),
+        ('MCC', 'Mastercard(CC)'),
+        ('AMEX', 'American Express'),
+        ('DC', 'Debit Card')] 
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
     item = models.ForeignKey(ShopItems, on_delete=models.CASCADE)
     payment_amount = models.DecimalField(max_digits=6, decimal_places=2)
-    payment_method = models.CharField(max_length=10, default=None)
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default=None)
     date = models.DateTimeField('payment date', default=timezone.now)
 
     def __str__(self):

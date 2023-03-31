@@ -52,3 +52,13 @@ a {
   background-color: RoyalBlue;
 }
 
+#itemdiv {
+  height: 300px;
+  width: 250px;
+  border: 1px solid black;
+}
+
+#totaldiv {
+  height: 15px;
+}
+

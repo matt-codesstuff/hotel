@@ -4,23 +4,39 @@
 <div class="container">
     <h5>Shop</h5>
     <br><br><br>
+
     <form action="shop" method="post"> 
         {% csrf_token %}
         {{form.as_p}}
-        
-    </form>
-    {% if item_form_list %}
-        {% for item in item_form_list %}
-            <form action="delete/{{item.item.value.pk}}" method="post">
-                {% csrf_token %}
-                {{item}}
-                <button class="btn" onclick="this.form.submit()"><i class="fa fa-close"></i></button>        
-            </form>      
-        {% endfor %}
-    {% endif %}
+    </form>   
+    <div id="itemdiv">
+        {% if item_form_list %}
+            {% for item in item_form_list %}
 
+                <form action="delete/{{item.item.value.pk}}" method="post">
+                    {% csrf_token %}
+                    {{item}}
+                    <button class="btn" onclick="this.form.submit()"><i class="fa fa-close"></i></button>         
+                </form>
+
+            {% endfor %}
+           
+            
+        {% endif %} 
+    </div>
+<div id="totaldiv">
+
+</div>    
     <br>
-    <p><strong>Total:</strong> {{total_due}}</p>   
+    <p><strong>Total:</strong> {{total_due}}</p>
+</div>
+<div class="container">
+
+    <form>
+        {% csrf_token %}
+        {{ payment_form.as_p }} 
+    </form>
+    
 </div>
  
 {% endblock %}

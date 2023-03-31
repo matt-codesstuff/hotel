@@ -33,4 +33,14 @@ class ItemForm(forms.Form):
     item = forms.CharField(widget=forms.TextInput(attrs={'readonly': True, 'style': 'border:none'}), label='')
 
 
+class PaymentForm(forms.ModelForm):
+    class Meta:
+        model = Payment
+        fields = ['payment_amount', 'payment_method', 'date']
+            
+
+
+
+
+
    

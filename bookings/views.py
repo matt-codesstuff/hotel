@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 
 from .models import Booking, Room, Guest, Floor, ShopItems
-from .forms import NewBookingForm, DatePickerForm, ShopForm, ItemForm
+from .forms import NewBookingForm, DatePickerForm, ShopForm, ItemForm, PaymentForm
 
 DAYCOUNT = 10
 AMSTERDAM = pytz.timezone('Europe/Amsterdam')
@@ -128,18 +128,18 @@ def new_booking(request, room_id, date):
 def shop(request):
     total_due = 0
     item_form_list = []
+    payment_form = PaymentForm()
+    
+
     if request.method == 'POST':
         form = ShopForm(request.POST)
         if form.is_valid:
             item = request.POST.get('item')
             item_model = ShopItems.objects.get(pk=item)
             TALLY_LIST.append(item_model)
-            form = ShopForm(initial={'tally': TALLY_LIST})
-            #item_form = ItemForm(initial={'item': TALLY_LIST})
-            
+            form = ShopForm(initial={'tally': TALLY_LIST})            
     else:        
         form = ShopForm()
-        item_form = ItemForm()
 
     for item in TALLY_LIST:
         total_due += item.item_amount
@@ -149,8 +149,8 @@ def shop(request):
                   {'form': form,
                    'tally_list': TALLY_LIST,
                    'total_due': total_due,
-                   'item_form_list': item_form_list
-                   })
+                   'item_form_list': item_form_list,
+                   'payment_form': payment_form})
 
 def delete_store_item(request, item_id):
     del_item = ShopItems.objects.get(pk=item_id)
