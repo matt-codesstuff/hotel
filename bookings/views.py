@@ -5,23 +5,27 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.utils import timezone
 
-from .models import Booking, Room, Guest, Floor
-from .forms import NewBookingForm
+from .models import Booking, Room, Guest, Floor, ShopItems
+from .forms import NewBookingForm, DatePickerForm, ShopForm, ItemForm
 
 DAYCOUNT = 10
 AMSTERDAM = pytz.timezone('Europe/Amsterdam')
+TALLY_LIST = []
+
 
 def index(request):
-    #get the starting date for the table displayed on the index page.
-    #if no date is given, set the date to timezone.now
-    #if the date is given, make a datetime object from it and add timezone data
+    # get the starting date for the table displayed on the index page.
+    # if no date is given, set the date to timezone.now
+    # if the date is given, make a datetime object from it and add timezone data
     if request.method == 'POST':
         date = request.POST.get('date')       
         date_check = datetime.fromisoformat(date).replace(tzinfo=AMSTERDAM)                
     else:
         date_check = timezone.now()
 
-    #set up lists and variables 
+    form = DatePickerForm(initial={'date': date_check})        
+
+    # set up lists and variables 
     dates = ['Room']
     rooms = Room.objects.all()
     floors = Floor.objects.all()
@@ -29,20 +33,19 @@ def index(request):
     floor_dict = dict.fromkeys(floors)    
     date_check_header = date_check
 
-    #set up initial table. firstly, create a list of dates to be displayed in table header, 
-    #for each floor, create a 2d array cosisting of a list for each floor and a list for each room within its correspoding floor list
-    #then populate each room list with datetime objects to the amount of the DAYCOUNT variable    
+    # set up initial table. firstly, create a list of dates to be displayed in table header for each floor 
     for i in range(DAYCOUNT):
         dates.append(date_check_header.strftime('%d/%m/%y'))
         date_check_header += timedelta(days=1)
-
+    # for each floor, create a 2d array cosisting of a list that contains lists for each room on that floor, then add to dictionary
     for floor in floor_dict:
         bookings_per_floor = []
         rooms_per_floor = rooms.filter(floor=floor)
         for room_nr in rooms_per_floor:        
             bookings_per_floor.append([room_nr])
         floor_dict[floor] = bookings_per_floor
-
+    # then populate each room list with datetime objects to the amount of the DAYCOUNT value
+    # each datetime object gets converted to string, removing any slashes. this makes it easier to pass through urlconfig later on
     for floor in floor_dict:
         for room_row in floor_dict[floor]:
             d = date_check
@@ -71,7 +74,8 @@ def index(request):
 
     return render(request, 'bookings/index.html', 
                   { 'dates' : dates,
-                   'floor_dict': floor_dict})       
+                   'floor_dict': floor_dict,
+                   'form': form})       
 
             
 def detail(request, booking_id):
@@ -87,11 +91,10 @@ def new_booking(request, room_id, date):
             room_nr = request.POST.get('room')
             total_guests = request.POST.get('total_guests')
             rate = request.POST.get('rate')
-            check_in = request.POST.get('check_in')
-            check_out = request.POST.get('check_out')
-
+            check_in = datetime.fromisoformat(request.POST.get('check_in')).replace(tzinfo=AMSTERDAM)
+            check_out = datetime.fromisoformat(request.POST.get('check_out')).replace(tzinfo=AMSTERDAM)
             room = Room.objects.get(identifier=room_nr)
-                
+                           
             g = Guest(first_name = first, 
                           last_name = last)
             g.save()
@@ -106,17 +109,12 @@ def new_booking(request, room_id, date):
 
             return redirect('bookings:index')
         else:
-            return HttpResponse("You done ffed up")
+            return HttpResponse("Something went wrong.")
     else:        
         room = Room.objects.get(pk=room_id)
-        day = date[:2]
-        month = date[2:4]
-        year = date[4:]
-        co_day = str(int(day) + 1)
-        co = co_day + month + year
-
         check_in = datetime.strptime(date, '%d%m%y')
-        check_out = datetime.strptime(co, '%d%m%y')
+        check_out = check_in 
+        check_out += timedelta(days=1)
 
         data = {'check_in': check_in,
                     'check_out': check_out,
@@ -126,6 +124,39 @@ def new_booking(request, room_id, date):
     return render(request, 'bookings/new_booking.html',
                     {'form': form,
                     'room': room,})
+
+def shop(request):
+    total_due = 0
+    item_form_list = []
+    if request.method == 'POST':
+        form = ShopForm(request.POST)
+        if form.is_valid:
+            item = request.POST.get('item')
+            item_model = ShopItems.objects.get(pk=item)
+            TALLY_LIST.append(item_model)
+            form = ShopForm(initial={'tally': TALLY_LIST})
+            #item_form = ItemForm(initial={'item': TALLY_LIST})
+            
+    else:        
+        form = ShopForm()
+        item_form = ItemForm()
+
+    for item in TALLY_LIST:
+        total_due += item.item_amount
+        item_form_list.append(ItemForm(initial={'item': item}))    
+    
+    return render(request, 'bookings/shop.html',
+                  {'form': form,
+                   'tally_list': TALLY_LIST,
+                   'total_due': total_due,
+                   'item_form_list': item_form_list
+                   })
+
+def delete_store_item(request, item_id):
+    del_item = ShopItems.objects.get(pk=item_id)
+    TALLY_LIST.remove(del_item)
+    return redirect('bookings:shop')
+
 
 
 

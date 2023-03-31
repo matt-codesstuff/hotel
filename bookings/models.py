@@ -1,5 +1,3 @@
-import datetime
-
 from django.db import models
 from django.utils import timezone
 
@@ -24,7 +22,7 @@ class Guest(models.Model):
                 return f'{(self.first_name[0].upper())}. {self.last_name.capitalize()}'
         else:
             if len(self.first_name) > 10:
-                return f'{self.first_name[:5].capitalize()}'
+                return f'{self.first_name[:6].capitalize()}...'
             else:
                 return f'{self.first_name.capitalize()}'        
     
@@ -37,12 +35,43 @@ class Floor(models.Model):
 
 
 class Room(models.Model):
+    ROOM_TYPE_CHOICES = [
+        ('SNGL', 'Single'),
+        ('DBL', 'Double'),
+        ('TWN', 'Twin'),
+        ('TRPL', 'Triple'),
+        ('QUAD', 'Quad'),
+        ('FML', 'Family')
+    ]
     identifier = models.CharField(max_length=8)
+    type = models.CharField(max_length=8, choices = ROOM_TYPE_CHOICES)
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE)
     occupancy = models.IntegerField()
 
     def __str__(self):
-        return self.identifier    
+        return self.identifier
+
+
+class ShopItems(models.Model):
+    item = models.CharField(max_length=200)
+    item_amount = models.DecimalField(max_digits=6, decimal_places=2)
+
+    class Meta:
+        verbose_name_plural = 'Shop items'
+
+    def __str__(self):
+        return f'{self.item}, {self.item_amount}'
+
+
+class Payment(models.Model):
+    guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
+    item = models.ForeignKey(ShopItems, on_delete=models.CASCADE)
+    payment_amount = models.DecimalField(max_digits=6, decimal_places=2)
+    payment_method = models.CharField(max_length=10, default=None)
+    date = models.DateTimeField('payment date', default=timezone.now)
+
+    def __str__(self):
+        return f'{self.guest}, {self.payment_amount}, {self.date}'            
     
 
 class Booking(models.Model):

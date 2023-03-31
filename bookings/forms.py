@@ -1,9 +1,13 @@
 from django import forms
-from bookings.models import Guest, Booking, Room
+from bookings.models import Payment, Guest, ShopItems
 
 
 class DateInput(forms.DateInput):
     input_type = 'date' 
+
+
+class ItemChoice(forms.Select):
+    input_type = 'select'    
 
 
 class NewBookingForm(forms.Form):
@@ -15,4 +19,18 @@ class NewBookingForm(forms.Form):
     check_in = forms.DateTimeField(widget=DateInput(attrs={'readonly': True}),required=False)
     check_out = forms.DateTimeField(widget=DateInput())
 
-    
+
+class DatePickerForm(forms.Form):
+    date = forms.DateField(widget=DateInput(), label='') 
+
+
+class ShopForm(forms.Form):       
+    guest = forms.ModelChoiceField(queryset=Guest.objects.all().order_by('last_name'))
+    item = forms.ModelChoiceField(queryset=ShopItems.objects.all().order_by('item'), widget=forms.Select(attrs={'onchange': 'this.form.submit()'}))
+
+
+class ItemForm(forms.Form):
+    item = forms.CharField(widget=forms.TextInput(attrs={'readonly': True, 'style': 'border:none'}), label='')
+
+
+   

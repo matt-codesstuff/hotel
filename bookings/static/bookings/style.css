@@ -7,7 +7,7 @@ table {
   background-color:beige;
   width: 100%;
   border-collapse: separate;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 td, th {
@@ -21,10 +21,12 @@ a {
 }
 
 .booking {
+  border: 1px solid rgba(177, 177, 178, 0.5);
   background-color: rgba(52, 235, 183, 0.25);
 }
 
 .empty {
+  border: 1px solid rgba(177, 177, 178, 0.5);
   background-color: rgba(235, 213, 52, 0.5);
 }
 
@@ -35,3 +37,18 @@ a {
 .date {
   background-color: rgba(120, 119, 119, 0.6);
 }
+
+.btn {
+  background-color: DodgerBlue; 
+  border: 1px solid black; 
+  color: white; 
+  padding: 5px 5px; 
+  font-size: 10px; 
+  cursor: pointer;
+
+}
+
+.btn:hover {
+  background-color: RoyalBlue;
+}
+

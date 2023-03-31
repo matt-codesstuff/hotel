@@ -1,46 +1,44 @@
 {% extends 'bookings/header.html' %}
 
 {% block content %}
-<div class="container">
-  <h1>Bookings</h1>
-  <br>
-  <form action="/" method="post">
-    {% csrf_token %}
-    <input type="date" name="date">
-    <input type="submit" value="Check">
-  </form>
-  <br>
-  {% for key, value in floor_dict.items %}
-
-    <table>
-      <br>
-      <strong>{{key}}</strong>
-      <tr>
-        {% for date in dates %}
-          <th class="date">{{ date }}</th>
-        {% endfor %}
-      </tr>
-     
-          {% for room in value %}
-            <tr>
-                {% for booking in room %}
-                  {% if booking.pk %}
-                    {% if booking.identifier %}
-                      <td class="room_nr">{{ booking }}</td>
-                    {% else %}
-                      <td class="booking"><a href="detail/{{booking.pk}}">{{ booking.index }}</a></td>
-                    {% endif %}  
+  <div class="container">
+    <h1>Bookings</h1>
+    <br>
+    <form action="/" method="post">
+      {% csrf_token %}
+      {{form}}
+      <input type="submit" value="Check">
+    </form>
+    {% for key, value in floor_dict.items %}
+      <table>
+        <br>
+        <strong>{{key}}</strong>
+        <tr>
+          {% for date in dates %}
+            <th class="date">{{ date }}</th>
+          {% endfor %}
+        </tr>
+      
+        {% for room in value %}
+          <tr>
+              {% for booking in room %}
+                {% if booking.pk %}
+                  {% if booking.identifier %}
+                    <td class="room_nr">{{ booking }}</td>
                   {% else %}
-                    <td class="empty"><a href="new_booking/{{room.0.pk}}/{{booking}}">empty</a></td>  
+                    <td class="booking"><a href="detail/{{booking.pk}}">{{ booking.index }}</a></td>
                   {% endif %}  
-                {% endfor %}
-            </tr>     
-          {% endfor %}        
+                {% else %}
+                  <td class="empty"><a href="new_booking/{{room.0.pk}}/{{booking}}">empty</a></td>  
+                {% endif %}  
+              {% endfor %}
+          </tr>     
+        {% endfor %}        
 
-    </table>
-  {% endfor %}
-  <br><br><br><br>
-</div>
+      </table>
+    {% endfor %}
+    <br><br><br><br>
+  </div>
 
     
 
